@@ -1,0 +1,27 @@
+.authentication-div {
+    width: 600px;
+    margin-top: 20px;
+    padding: 5px;
+    box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.3);
+}
+
+.button {
+    transition: background-color 0.1s ease-in-out;
+}
+
+.input-field {
+    height: 14px;
+}
+
+.password-input {
+    width: 500px;
+}
+
+.email-input {
+    width: 562px;
+}
+
+.heading-div {
+    width: 500px;
+    border: 1px solid black;
+}
