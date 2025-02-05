@@ -1,6 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 function LoginPage() {
+    const [hide, setHide] = useState(false);
+    const handleHideClick = () => {
+        setHide(!hide);
+    };
     return (
         <div className='text-center p-1'>
             <div className='mb-3'>
@@ -11,10 +15,10 @@ function LoginPage() {
                 <h6 className='mx-1'>Password <span className='text-danger'>*</span></h6>
                 <div className='d-flex align-items-center justify-content-center'>
                     <div className='password-input me-1'>
-                        <input className='form-control rounded shadow-none' type='password' />
+                        <input className='form-control rounded shadow-none' type={`${hide === true ? "text" : "password"}`} />
                     </div>
                     <div className='hide-button me-1'>
-                        <button className='btn bg-light shadow-none' >Hide</button>
+                        <button className='btn bg-light shadow-none' onClick={handleHideClick}>Hide</button>
                     </div>
                 </div>
             </div>

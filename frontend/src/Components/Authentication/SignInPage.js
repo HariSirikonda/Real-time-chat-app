@@ -1,6 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 function SignInPage() {
+    const [passwordHide, setPasswordHide] = useState(true);
+    const [confirmPasswordHide, setConfirmPasswordHide] = useState(true);
+    const handlePasswordHide = () => {
+        setPasswordHide(!passwordHide);
+    };
+    const handleConfirmPasswordHide = () => {
+        setConfirmPasswordHide(!confirmPasswordHide);
+    };
     return (
         <div className='text-center p-1'>
             <div className='mb-3'>
@@ -15,10 +23,10 @@ function SignInPage() {
                 <h6 className='mx-1'>Password <span className='text-danger'>*</span></h6>
                 <div className='d-flex align-items-center justify-content-center'>
                     <div className='password-input me-1'>
-                        <input className='form-control rounded shadow-none' type='password' />
+                        <input className='form-control rounded shadow-none' type={`${passwordHide === true ? "password" : "text"}`} />
                     </div>
                     <div className='hide-button me-1'>
-                        <button className='btn bg-light shadow-none' >Hide</button>
+                        <button className='btn bg-light shadow-none' onClick={handlePasswordHide}>Hide</button>
                     </div>
                 </div>
             </div>
@@ -26,10 +34,10 @@ function SignInPage() {
                 <h6 className='mx-1'>Confirm Password <span className='text-danger'>*</span></h6>
                 <div className='d-flex align-items-center justify-content-center'>
                     <div className='password-input me-1'>
-                        <input className='form-control rounded shadow-none' type='password' />
+                        <input className='form-control rounded shadow-none' type={`${confirmPasswordHide === true ? "password" : "text"}`} />
                     </div>
                     <div className='hide-button me-1'>
-                        <button className='btn bg-light shadow-none' >Hide</button>
+                        <button className='btn bg-light shadow-none' onClick={handleConfirmPasswordHide}>Hide</button>
                     </div>
                 </div>
             </div>
