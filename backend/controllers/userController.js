@@ -38,4 +38,35 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 });
 
-module.exports = { registerUser };
+const authUser = asyncHandler(async (req, res) => {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (user) {
+        console.log("Entered Password:", password);
+        console.log("Stored Hashed Password:", user.password);
+
+        const isMatch = await user.matchPassword(password);
+        console.log("Password Match:", isMatch);
+
+        if (isMatch) {
+            res.json({
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                isAdmin: user.isAdmin,
+                pic: user.pic,
+                token: generateToken(user._id),
+            });
+        } else {
+            res.status(401);
+            throw new Error("Invalid Password");
+        }
+    } else {
+        res.status(401);
+        throw new Error("Invalid Email");
+    }
+});
+
+module.exports = { registerUser, authUser };
