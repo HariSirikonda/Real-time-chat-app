@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import LoginPage from '../Components/Authentication/LoginPage';
 import SignInPage from '../Components/Authentication/SignInPage';
 
-function HomePage() {
+function HomePage({ setIsSignedUp }) {
     const [activeTab, setActiveTab] = useState("login");
 
     return (
@@ -31,7 +31,7 @@ function HomePage() {
                     </div>
                 </div>
                 <div className='mt-3 p-1 rounded'>
-                    {activeTab === "login" ? <LoginPage /> : <SignInPage />}
+                    {activeTab === "login" ? <LoginPage setIsSignedUp={setIsSignedUp} /> : <SignInPage setIsSignedUp={setIsSignedUp} />}
                 </div>
             </div>
         </div>

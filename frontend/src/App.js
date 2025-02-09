@@ -1,15 +1,21 @@
-import logo from './logo.svg';
 import './App.css';
 import HomePage from './Pages/HomePage';
 import ChatsPage from './Pages/ChatsPage';
-import { Route } from 'react-router-dom/cjs/react-router-dom.min';
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { useState } from 'react';
+import { Redirect } from 'react-router-dom/cjs/react-router-dom.min';
 
 function App() {
+  const [isSignedUp, setIsSignedUp] = useState(false);
   return (
-    <div className="App">
-      <Route path='/' component={HomePage} exact />
-      <Route path='/chats' component={ChatsPage} exact />
-    </div>
+    <BrowserRouter>
+      <Switch>
+        <Route path='/' exact>
+          {isSignedUp ? <Redirect to="/chats" /> : <HomePage setIsSignedUp={setIsSignedUp} />}
+        </Route>
+        <Route path='/chats' component={ChatsPage} exact />
+      </Switch>
+    </BrowserRouter>
   );
 }
 

@@ -1,19 +1,40 @@
 import React, { useState } from 'react'
+import axios from 'axios';
 
-function LoginPage() {
-    const [email, setEmail] = useState();
-    const [password, setPassword] = useState();
+const LoginPage = ({ setIsSignedUp }) => {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     const [hide, setHide] = useState(true);
+    const [loading, setLoading] = useState(false);
+
     const handleHideClick = () => {
         setHide(!hide);
     };
-    const handleLoginClick = () => {
-        if (email === "" || password === "") {
-            alert("Enter proper Credentials");
+    const handleLoginClick = async () => {
+        setLoading(true)
+        if (!email || !password) {
+            alert("Enter All Fields");
+            setLoading(false)
+            return
         }
-        else {
-            console.log("Entered Email : ", email);
-            console.log("Entered Password : ", password);
+        try {
+            const config = {
+                headers: {
+                    "Content-type": "application/json",
+                },
+            };
+            const { data } = await axios.post(
+                "http://localhost:5000/api/user/login",
+                { email, password },
+                config
+            );
+            localStorage.setItem("userInfo", JSON.stringify(data));
+            setLoading(false);
+            setIsSignedUp(true);
+        } catch (error) {
+            console.error("Error:", error.response?.data || error.message);
+            alert(error.response?.data?.message || "An error occurred");
+            setLoading(false);
         }
     };
     return (
@@ -23,6 +44,7 @@ function LoginPage() {
                 <input
                     className='email-input mx-1 form-control rounded shadow-none'
                     placeholder='Enter your Email'
+                    value={email}
                     onChange={(e) => { setEmail(e.target.value) }}
                 />
             </div>
@@ -34,6 +56,7 @@ function LoginPage() {
                             className='form-control rounded shadow-none'
                             type={`${hide === true ? "text" : "password"}`}
                             placeholder='Enter your Password'
+                            value={password}
                             onChange={(e) => { setPassword(e.target.value) }}
                             required
                         />
@@ -46,10 +69,21 @@ function LoginPage() {
                 </div>
             </div>
             <div className='p-1'>
-                <button className='btn btn-primary text-white w-100 shadow-none' onClick={handleLoginClick}><b>Login</b></button>
+                <button
+                    className='btn btn-primary text-white w-100 shadow-none'
+                    onClick={handleLoginClick}
+                    disabled={loading}
+                >
+                    <b>{loading ? "Loading..." : "Login"}</b>
+                </button>
             </div>
             <div className='p-1'>
-                <button className='btn btn-danger text-white w-100 shadow-none' ><b>Get Guest User Credentials</b></button>
+                <button
+                    className='btn btn-danger text-white w-100 shadow-none'
+                    onClick={() => { setEmail("guest@gmail.com"); setPassword("123456"); }}
+                >
+                    <b>Get Guest User Credentials</b>
+                </button>
             </div>
         </div>
     )

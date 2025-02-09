@@ -1,11 +1,14 @@
+'use-client'
+import axios from 'axios';
 import React, { useState } from 'react';
 
-function SignInPage() {
-    const [name, setName] = useState();
-    const [email, setEmail] = useState();
-    const [password, setPassword] = useState();
-    const [ConfirmPassword, setConfirmPassword] = useState();
-    const [pic, setPic] = useState();
+
+const SignInPage = ({ setIsSignedUp }) => {
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [ConfirmPassword, setConfirmPassword] = useState("");
+    const [pic, setPic] = useState(null);
     const [loading, setLoading] = useState(false);
     const [passwordHide, setPasswordHide] = useState(true);
     const [confirmPasswordHide, setConfirmPasswordHide] = useState(true);
@@ -19,7 +22,6 @@ function SignInPage() {
     };
 
     const uploadImage = async (file) => {
-        setLoading(true);
         if (file.type === "image/jpeg" || file.type === "image/png") {
             const data = new FormData();
             data.append("file", file);
@@ -33,31 +35,45 @@ function SignInPage() {
                 const result = await res.json();
                 console.log("Uploaded Image URL:", result.secure_url);
                 setPic(result.secure_url);
-                setLoading(false);
             } catch (error) {
                 console.error("Image upload failed:", error);
-                setLoading(false);
             }
         } else {
             alert("Images of Jpeg or png only allowed..! Try again");
-            setLoading(false);
         }
     };
 
-    const handleSubmit = () => {
+    const submitHandler = async () => {
         setLoading(true);
-        if ((pic === undefined) && (!name || !email || !password || !ConfirmPassword)) {
-            alert("Please Fill the fields");
+        if (!name || !email || !password || !ConfirmPassword) {
+            alert("Please Fill all the fields")
             setLoading(false);
             return;
-        } else if (password != ConfirmPassword) {
-            alert("Passwords doesn't match");
-            setLoading(false)
+        }
+        if (password !== ConfirmPassword) {
+            alert("Passwords Do not match..!")
             return;
         }
-        else {
-            uploadImage(pic)
-            alert("Sign Up successful :)")
+        try {
+            const config = {
+                headers: {
+                    "Content-type": "application/json",
+                },
+            };
+            const { data } = await axios.post(
+                "http://localhost:5000/api/user",
+                { name, email, password, pic },
+                config
+            );
+            console.log(data);
+            alert("Registration Successful");
+            localStorage.setItem("userInfo", JSON.stringify(data));
+            setIsSignedUp(true);
+            setLoading(false);
+        } catch (error) {
+            console.error("Error:", error.response?.data || error.message);
+            alert(error.response?.data?.message || "An error occurred");
+            setLoading(false);
         }
     };
 
@@ -123,7 +139,7 @@ function SignInPage() {
                     className="form-control form-control-sm shadow-none"
                     id="formFileSm"
                     type="file"
-                    onChange={(e) => setPic(e.target.files[0])}
+                    onChange={(e) => uploadImage(e.target.files[0])}
                 />
             </div>
             <div className='p-1'>
@@ -131,7 +147,7 @@ function SignInPage() {
                     className='btn btn-primary text-white w-100 shadow-none'
                     id='ImageName'
                     disabled={loading}
-                    onClick={handleSubmit}
+                    onClick={submitHandler}
                 ><b>
                         {loading ? "Loading..." : "Sign Up"}
                     </b>

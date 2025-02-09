@@ -4,6 +4,7 @@ const User = require("../models/userModel");
 
 const registerUser = asyncHandler(async (req, res) => {
     const { name, email, password, pic } = req.body;
+    console.log("Recieved Request : ", req.body);
     if (!name || !email || !password) {
         res.status(400);
         throw new Error("Enter all fields");
@@ -24,7 +25,7 @@ const registerUser = asyncHandler(async (req, res) => {
     });
 
     if (user) {
-        res.status(201).json({
+        res.json({
             _id: user._id,
             name: user.name,
             email: user.email,
